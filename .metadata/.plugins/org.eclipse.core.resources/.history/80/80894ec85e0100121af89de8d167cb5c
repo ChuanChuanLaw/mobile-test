@@ -1,0 +1,7 @@
+ import org.junit.Test;                   // need to import Test
+ import junit.framework.TestCase;
+ public class test extends TestCase {  
+   @Test public void fooThingie() {       // @Test, arbitrary method name!
+     assertTrue(1 == 1);   
+   }
+ }

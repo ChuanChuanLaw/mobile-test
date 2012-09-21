@@ -1,0 +1,72 @@
+import java.net.URL;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebElement;
+
+import org.junit.*;
+
+public class Test
+{
+   public static void main ( String[] args ) throws Exception
+   {
+	   WebDriver driver = new RemoteWebDriver(new URL("http://10.12.2.18:3001/wd/hub"), DesiredCapabilities.iphone());
+	   driver.get("http://careers.pageuppeople.com/218/caw/en/listing");
+	   
+	   WebElement search = driver.findElement(By.name("search-keyword"));
+	   search.sendKeys("test analyst");
+	   
+	   WebElement location = driver.findElement(By.name("search-location"));
+	   location.sendKeys("Melbourne, VIC");
+	   
+	   WebDriverWait wait = new WebDriverWait(driver, 10);
+	   WebElement locationLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Melbourne, VIC")));
+	   locationLink.click();
+	   
+	   search.submit();
+	    
+	   boolean searchResult=driver.getPageSource().contains("test"); 
+	   Assert.assertEquals(searchResult, true);
+	   System.out.println("Job found");
+	   
+	   driver.findElement(By.className("job-link")).click();
+	   
+	   boolean jobNo=driver.getPageSource().contains("Job no:"); 
+	   Assert.assertEquals(jobNo, true);
+	   System.out.println("Job no found");
+	   
+	   WebElement email=driver.findElement(By.name("mobile-apply-email"));
+	   email.sendKeys("chuanl@pageuppeople.com");
+	   
+	   driver.findElement(By.xpath("//input[@value='Send']")).click();
+	   
+	   boolean msg=driver.getPageSource().contains("Thank you! You will receive an email");
+	   Assert.assertEquals(msg, true);
+	   System.out.println("Email sent");
+	   
+	   driver.findElement(By.linkText("Back to list")).click();
+	   
+	   boolean backBtn = driver.getPageSource().contains("Search Results");
+	   Assert.assertEquals(backBtn, true);
+	   System.out.println("Back to search results");
+	   
+	   driver.findElement(By.linkText("Send me jobs like these")).click();
+	   
+	   WebElement subscription = driver.findElement(By.name("job-mail-subscribe-email"));
+	   subscription.sendKeys("test@test.com");
+	   
+	   driver.findElement(By.name("job-mail-subscribe-button")).click();
+	   
+	   boolean similarJobsMsg = driver.getPageSource().contains("Ok, we will send you jobs like this");
+	   Assert.assertEquals(similarJobsMsg, true);
+	   System.out.println("Similar jobs email");
+	   
+	   driver.quit();
+   }
+ 
+}	   

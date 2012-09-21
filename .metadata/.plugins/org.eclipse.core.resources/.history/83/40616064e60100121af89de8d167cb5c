@@ -1,0 +1,19 @@
+import java.net.URL;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebElement;
+
+public class Test
+{
+   public static void main ( String[] args ) throws Exception
+   {
+	   WebDriver driver = new RemoteWebDriver(new URL("http://10.12.2.18:3001/wd/hub"), DesiredCapabilities.iphone());
+	   driver.get("http://www.google.com");
+
+	
+   }
+}

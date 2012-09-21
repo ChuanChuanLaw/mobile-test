@@ -1,0 +1,51 @@
+package simple.app.test;
+
+import java.util.concurrent.TimeUnit;
+
+import android.test.ActivityInstrumentationTestCase2;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.android.AndroidWebDriver;
+
+import simple.app.SimpleAppActivity;
+
+public class SimpleGoogleTest extends ActivityInstrumentationTestCase2<SimpleAppActivity> {
+    
+
+	private WebDriver driver;
+    
+    public SimpleGoogleTest() {
+        super("simple.app", SimpleAppActivity.class);
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+      driver = new AndroidWebDriver(getActivity());
+    }
+    
+    @Override
+    protected void tearDown() {
+       driver.quit();
+    }
+    
+    public void testGoogleWorks() {
+    	 // Loads www.google.com
+        driver.get("http://mobilecandidate.pageuppeople.com/218/caw/en/listing/");
+    	//driver.get("http:www.google.com");
+    	// Lookup the search box on the page by it's HTML name property
+        WebElement searchBox = driver.findElement(By.name("search-keyword"));
+        // Enter keys in the search box
+        searchBox.sendKeys("test");
+        // Hit enter
+        searchBox.submit();
+        // Ensure the title contains "Google"
+        //assertTrue(driver.getTitle().contains("Google"));
+        // Ensure that there is at least one link with the keyword "Android"
+        //assertTrue(driver.findElements(By.partialLinkText("Android")).size() > 1);
+        driver.quit();
+    }
+}
+

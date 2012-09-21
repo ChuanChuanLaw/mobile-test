@@ -1,0 +1,16 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.iphone.IPhoneDriver;
+
+public class test
+{
+   public static void main ( String[] args ) throws Exception
+   {
+      IPhoneDriver driver = new IPhoneDriver();
+      driver.get( "http://google.com" );
+      WebElement searchTextField = driver.
+      findElement(By.xpath("//input[@name='q']"));
+      searchTextField.sendKeys("Hello World");
+      searchTextField.submit();
+   }
+}

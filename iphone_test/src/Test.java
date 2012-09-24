@@ -25,6 +25,7 @@ public class Test
 	   WebDriver driver = new RemoteWebDriver(new URL("http://10.12.2.18:3001/wd/hub"), DesiredCapabilities.iphone());
 	   driver.get("http://careers.pageuppeople.com/218/caw/en/listing");
 	   
+	   //Take a screen shot of the main page
 	   WebDriver augmentedDriver = new Augmenter().augment(driver);
        File screenshot1 = ((TakesScreenshot)augmentedDriver).
                            getScreenshotAs(OutputType.FILE);
@@ -45,11 +46,6 @@ public class Test
 	   
 	   search.submit();
 	   
-	   File screenshot2 = ((TakesScreenshot)augmentedDriver).
-               getScreenshotAs(OutputType.FILE);
-
-       FileUtils.copyFile(screenshot2, new File("/Users/chuan/searchResults.png"));
-	   
 	   //Looking for search keyword returned
 	   boolean searchResult=driver.getPageSource().contains("test"); 
 	   Assert.assertEquals(searchResult, true);
@@ -61,10 +57,11 @@ public class Test
 	   Assert.assertEquals(jobNo, true);
 	   System.out.println("Job no found");
 	   
-	   File screenshot3 = ((TakesScreenshot)augmentedDriver).
+	   //Take a screen shot of the job details page
+	   File screenshot2 = ((TakesScreenshot)augmentedDriver).
                getScreenshotAs(OutputType.FILE);
 
-       FileUtils.copyFile(screenshot3, new File("/Users/chuan/jobDetails.png"));
+       FileUtils.copyFile(screenshot2, new File("/Users/chuan/jobDetails.png"));
 	   
 	   //Grab the job title
 	   String jobTitle1=driver.findElement(By.xpath("//span[@id='page-heading']")).getText();

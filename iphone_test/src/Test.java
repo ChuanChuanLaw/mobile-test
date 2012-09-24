@@ -1,15 +1,21 @@
+import java.io.File;
 import java.net.URL;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.*;
+
 
 public class Test
 {
@@ -19,6 +25,11 @@ public class Test
 	   WebDriver driver = new RemoteWebDriver(new URL("http://10.12.2.18:3001/wd/hub"), DesiredCapabilities.iphone());
 	   driver.get("http://careers.pageuppeople.com/218/caw/en/listing");
 	   
+	   WebDriver augmentedDriver = new Augmenter().augment(driver);
+       File screenshot1 = ((TakesScreenshot)augmentedDriver).
+                           getScreenshotAs(OutputType.FILE);
+       
+       FileUtils.copyFile(screenshot1, new File("/Users/chuan/mainPage.png"));
 	   
 	   //Search by keyword
 	   WebElement search = driver.findElement(By.name("search-keyword"));
@@ -34,6 +45,11 @@ public class Test
 	   
 	   search.submit();
 	   
+	   File screenshot2 = ((TakesScreenshot)augmentedDriver).
+               getScreenshotAs(OutputType.FILE);
+
+       FileUtils.copyFile(screenshot2, new File("/Users/chuan/searchResults.png"));
+	   
 	   //Looking for search keyword returned
 	   boolean searchResult=driver.getPageSource().contains("test"); 
 	   Assert.assertEquals(searchResult, true);
@@ -44,6 +60,11 @@ public class Test
 	   boolean jobNo=driver.getPageSource().contains("Job no:"); 
 	   Assert.assertEquals(jobNo, true);
 	   System.out.println("Job no found");
+	   
+	   File screenshot3 = ((TakesScreenshot)augmentedDriver).
+               getScreenshotAs(OutputType.FILE);
+
+       FileUtils.copyFile(screenshot3, new File("/Users/chuan/jobDetails.png"));
 	   
 	   //Grab the job title
 	   String jobTitle1=driver.findElement(By.xpath("//span[@id='page-heading']")).getText();

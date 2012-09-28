@@ -1,5 +1,11 @@
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
@@ -24,14 +30,22 @@ public class Test
 	   //Initialize the webdriver. It should be smart enough to detect that it is a mobile app
 	   WebDriver driver = new RemoteWebDriver(new URL("http://10.12.2.18:3001/wd/hub"), DesiredCapabilities.iphone());
 	   driver.get("http://careers.pageuppeople.com/218/caw/en/listing");
-	   
+	   	   
+	   //Copy the existing main page as old image and change it into BufferedImage file type
+	   FileUtils.copyFile(new File("/Users/chuan/mainPage.png"),new File("/Users/chuan/oldMainPage.png"));
+	   BufferedImage oldMainPage = ImageIO.read(new File("/Users/chuan/oldMainPage.png"));
+       	   
 	   //Take a screen shot of the main page
 	   WebDriver augmentedDriver = new Augmenter().augment(driver);
        File screenshot1 = ((TakesScreenshot)augmentedDriver).
                            getScreenshotAs(OutputType.FILE);
        
-       FileUtils.copyFile(screenshot1, new File("/Users/chuan/mainPage.png"));
+       FileUtils.copyFile(screenshot1, new File("/Users/chuan/mainPage.png"));       
+       BufferedImage newMainPage = ImageIO.read(new File("/Users/chuan/mainPage.png"));
 	   
+       //Pass the old image to compare against the new image
+       compareImage(oldMainPage,newMainPage);
+      
 	   //Search by keyword
 	   WebElement search = driver.findElement(By.name("search-keyword"));
 	   search.sendKeys("test analyst");
@@ -57,11 +71,18 @@ public class Test
 	   Assert.assertEquals(jobNo, true);
 	   System.out.println("Job no found");
 	   
+	   //Copy the existing main page as old image and change it into BufferedImage file type
+	   FileUtils.copyFile(new File("/Users/chuan/jobDetails.png"),new File("/Users/chuan/oldJobDetails.png"));
+	   BufferedImage oldJobDetails = ImageIO.read(new File("/Users/chuan/oldJobDetails.png"));
+	   
 	   //Take a screen shot of the job details page
 	   File screenshot2 = ((TakesScreenshot)augmentedDriver).
                getScreenshotAs(OutputType.FILE);
 
        FileUtils.copyFile(screenshot2, new File("/Users/chuan/jobDetails.png"));
+       BufferedImage newJobDetails = ImageIO.read(new File("/Users/chuan/jobDetails.png"));
+       
+       compareImage(oldJobDetails,newJobDetails);
 	   
 	   //Grab the job title
 	   String jobTitle1=driver.findElement(By.xpath("//span[@id='page-heading']")).getText();
@@ -128,4 +149,35 @@ public class Test
 	   driver.quit();
    }
  
+   public static void compareImage(BufferedImage oldImage,BufferedImage newImage) throws IOException{        
+       boolean ret=true;
+       
+       Raster ras1 = oldImage.getData();
+       Raster ras2 = newImage.getData();
+       //Comparing the the two images for number of bands,width & height.
+       if (ras1.getNumBands() != ras2.getNumBands()
+         || ras1.getWidth() != ras2.getWidth()
+         || ras1.getHeight() != ras2.getHeight()) {
+          ret=false;
+       }
+       else{
+    	   // Once the band ,width & height matches, comparing the images.  	 
+    	   search: for (int i = 0; i < ras1.getNumBands(); ++i) {
+    	    for (int x = 0; x < ras1.getWidth(); ++x) {
+    	     for (int y = 0; y < ras1.getHeight(); ++y) {
+    	      if (ras1.getSample(x, y, i) != ras2.getSample(x, y, i)) {
+    	     // If one of the result is false setting the result as false and breaking the loop.
+    	       ret = false;
+    	       break search;
+    	      }
+    	     }
+    	    }
+    	   }
+       }
+       if (ret == true) {
+    	    System.out.println("Image matches");
+    	   } else {
+    	    System.out.println("Image does not matches");
+       }           
+   }
 }	   
